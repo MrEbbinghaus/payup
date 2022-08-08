@@ -1,0 +1,24 @@
+{:tasks
+ {outdated:clj
+  {:task (clojure {:continue true} "-Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"} org.slf4j/slf4j-nop {:mvn/version \"RELEASE\"}}}' -M -m antq.core")}
+
+  outdated:node-modules
+  {:task (shell "yarn" "outdated")}
+
+  outdated
+  {:doc "Checks CLJ & node dependencies for outdated dependencies."
+   :depends [outdated:clj outdated:node-modules]}
+
+  cljs:clean
+  {:requires ([babashka.fs :as fs])
+   :task (do
+           (fs/delete-tree ".shadow-cljs")
+           (fs/delete-tree "resources/public/js")
+           (fs/delete-tree "resources/public/workspaces/js"))}
+
+  cljs:install
+  {:task (shell "yarn install")}
+
+  dev:watch-cljs
+  {:depends [cljs:install]
+   :task (shell "clj -M:dev -m \"shadow.cljs.devtools.cli\" watch :main")}}}

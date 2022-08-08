@@ -1,0 +1,29 @@
+{:deps {:aliases [:dev]}
+ :nrepl {:port 9000}
+ :builds {:main {:target :browser
+                 :output-dir "resources/public/js/main"
+                 :asset-path "assets/js/main"
+
+                 :module-hash-names true
+                 :modules {:client {:init-fn me.ebbinghaus.payup.client/init
+                                    :entries [me.ebbinghaus.payup.client]}}
+                 :js-options {:entry-keys ["module" "browser" "main"]}
+                 ;; guardrails enforcement only during dev
+                 :dev {:compiler-options
+                       {:external-config {:guardrails {:defn-macro nil
+                                                       :expound {:show-valid-values? true
+                                                                 :print-specs? true}
+                                                       :async? true
+                                                       :throw? false
+                                                       :emit-spec? true}}
+                        :closure-defines {'goog.DEBUG true}}}
+
+                 :release
+                 {:build-options
+                  {:ns-aliases
+                   {com.fulcrologic.guardrails.core com.fulcrologic.guardrails.noop}}}
+
+                 :devtools {:after-load me.ebbinghaus.payup.client/refresh
+                            :preloads [com.fulcrologic.fulcro.inspect.preload
+                                       development-preload
+                                       com.fulcrologic.fulcro.inspect.dom-picker-preload]}}}}

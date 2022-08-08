@@ -1,0 +1,10 @@
+.clj-kondo/.cache
+
+.nrepl-port
+.cpcache
+.calva
+node_modules
+.lsp
+.shadow-cljs
+/target
+resources/public/js
